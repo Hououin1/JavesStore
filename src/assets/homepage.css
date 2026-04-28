@@ -21,7 +21,23 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 0;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.section-inline-tabs {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
 }
 
 .section-kicker {
@@ -33,19 +49,65 @@
   text-transform: uppercase;
 }
 
-.section-title {
-  margin: 0;
-  color: #f8fafc;
-  font-size: 2rem;
+.section-inline-tab {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  padding: 0 0 8px;
+  border: 0;
+  background: transparent;
+  color: #cbd5e1;
+  text-align: left;
+  font-size: 1.55rem;
   font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.section-inline-tab:hover {
+  color: #f8fafc;
+}
+
+.section-inline-tab.is-active {
+  color: #f8fafc;
+}
+
+.section-inline-tab:not(.is-active) {
+  opacity: 0.75;
+}
+
+.section-inline-tab:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, 0.9);
+  outline-offset: 2px;
+}
+
+.section-inline-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 148px;
+  height: 3px;
+  border-radius: 999px;
+  background: #f8fafc;
+  transition: transform 0.28s ease, width 0.28s ease;
+}
+
+.section-inline-indicator.is-popular {
+  transform: translateX(0);
+}
+
+.section-inline-indicator.is-joki {
+  width: 112px;
+  transform: translateX(196px);
 }
 
 .section-divider {
   height: 1px;
   width: 100%;
+  margin-top: 8px;
   margin-bottom: 30px;
-  background:
-    linear-gradient(90deg, #f8fafc 0 8rem, rgba(248, 250, 252, 0.18) 8rem, rgba(248, 250, 252, 0.08) 100%);
+  background: rgba(248, 250, 252, 0.12);
 }
 
 @media (max-width: 768px) {
@@ -60,6 +122,31 @@
 
   .section-title {
     font-size: 1.5rem;
+  }
+
+  .section-title-row {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .section-inline-tabs {
+    gap: 18px;
+    padding-bottom: 12px;
+  }
+
+  .section-inline-tab {
+    min-width: 0;
+    padding-bottom: 6px;
+    font-size: 1.2rem;
+  }
+
+  .section-inline-indicator {
+    width: 104px;
+  }
+
+  .section-inline-indicator.is-joki {
+    width: 84px;
+    transform: translateX(138px);
   }
 
   .game-grid {

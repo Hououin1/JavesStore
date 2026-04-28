@@ -13,6 +13,11 @@
   text-align: left;
 }
 
+.card-surface {
+  display: block;
+  width: 100%;
+}
+
 .card-image-wrapper {
   --card-glow: rgba(96, 165, 250, 0.45);
   --card-base: #2f374d;
@@ -49,23 +54,6 @@
   outline-offset: 4px;
 }
 
-.card-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 2;
-  padding: 7px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.38);
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  backdrop-filter: blur(10px);
-}
-
 .card-pattern {
   position: absolute;
   inset: 0;
@@ -84,17 +72,8 @@
   bottom: 0;
   left: 0;
   z-index: 2;
-  padding: 24px 18px 18px;
+  padding: 32px 18px 18px;
   background: linear-gradient(180deg, transparent 0%, rgba(13, 16, 26, 0.9) 60%, rgba(10, 12, 20, 0.98) 100%);
-}
-
-.card-category {
-  display: inline-block;
-  margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.74);
-  font-size: 0.78rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
 .card-title {
@@ -188,7 +167,7 @@
   }
 
   .card-overlay {
-    padding: 20px 14px 16px;
+    padding: 26px 14px 16px;
   }
 
   .card-title {

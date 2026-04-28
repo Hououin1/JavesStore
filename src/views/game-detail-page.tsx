@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, BadgeHelp, ChevronDown, ChevronUp, ShieldCheck, Wallet, Zap } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowLeft, BadgeHelp, ChevronDown, ChevronUp, Info, ShieldCheck, Wallet, X, Zap } from 'lucide-react';
 import '../assets/game-detail.css';
 import { paymentGroups } from '../data/games';
 import type { GameDetail } from '../data/games';
@@ -10,9 +10,16 @@ interface GameDetailPageProps {
 }
 
 const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
+  const isMobileLegends = game.slug === 'mobile-legends';
   const [selectedPackageId, setSelectedPackageId] = useState('');
   const [expandedPaymentId, setExpandedPaymentId] = useState('');
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('');
+  const [playerId, setPlayerId] = useState('');
+  const [serverZone, setServerZone] = useState('');
+  const [whatsAppNumber, setWhatsAppNumber] = useState('');
+  const [paymentNotice, setPaymentNotice] = useState('');
+  const packageSectionRef = useRef<HTMLElement | null>(null);
+  const noticeTimeoutRef = useRef<number | null>(null);
 
   const selectedPackage = useMemo(
     () => game.packages.find((item) => item.id === selectedPackageId),
@@ -23,7 +30,33 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
     setSelectedPackageId('');
     setExpandedPaymentId('');
     setSelectedPaymentMethodId('');
+    setPlayerId('');
+    setServerZone('');
+    setWhatsAppNumber('');
+    setPaymentNotice('');
   }, [game.slug]);
+
+  useEffect(() => {
+    if (!paymentNotice) {
+      return;
+    }
+
+    if (noticeTimeoutRef.current) {
+      window.clearTimeout(noticeTimeoutRef.current);
+    }
+
+    noticeTimeoutRef.current = window.setTimeout(() => {
+      setPaymentNotice('');
+      noticeTimeoutRef.current = null;
+    }, 2800);
+
+    return () => {
+      if (noticeTimeoutRef.current) {
+        window.clearTimeout(noticeTimeoutRef.current);
+        noticeTimeoutRef.current = null;
+      }
+    };
+  }, [paymentNotice]);
 
   const basePrice = useMemo(() => {
     if (!selectedPackage) {
@@ -33,7 +66,17 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
     return Number(selectedPackage.price.replace(/[^\d]/g, ''));
   }, [selectedPackage]);
 
+  const sanitizeDigits = (value: string, maxLength?: number) => {
+    const digitsOnly = value.replace(/\D/g, '');
+    return typeof maxLength === 'number' ? digitsOnly.slice(0, maxLength) : digitsOnly;
+  };
+
   const formatPrice = (value: number) => `Rp ${value.toLocaleString('id-ID')}`;
+
+  const showPaymentNotice = () => {
+    packageSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setPaymentNotice('Silahkan pilih nominal top up terlebih dahulu');
+  };
 
   return (
     <section className="detail-section">
@@ -76,7 +119,7 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
           </aside>
 
           <div className="detail-main">
-            <section className="detail-panel">
+            <section ref={packageSectionRef} className="detail-panel">
               <div className="detail-panel-header">
                 <span className="detail-step">1</span>
                 <div>
@@ -88,15 +131,47 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
               <div className="detail-form-grid">
                 <label>
                   <span>Player ID</span>
-                  <input type="text" placeholder="Masukkan user ID" />
+                  <input
+                    type="text"
+                    inputMode={isMobileLegends ? 'numeric' : 'text'}
+                    placeholder="Masukkan user ID"
+                    value={playerId}
+                    onChange={(event) =>
+                      setPlayerId(
+                        isMobileLegends
+                          ? sanitizeDigits(event.target.value)
+                          : event.target.value,
+                      )
+                    }
+                  />
                 </label>
                 <label>
                   <span>Server / Zone</span>
-                  <input type="text" placeholder="Masukkan server ID" />
+                  <input
+                    type="text"
+                    inputMode={isMobileLegends ? 'numeric' : 'text'}
+                    maxLength={isMobileLegends ? 8 : undefined}
+                    placeholder="Masukkan server ID"
+                    value={serverZone}
+                    onChange={(event) =>
+                      setServerZone(
+                        isMobileLegends
+                          ? sanitizeDigits(event.target.value, 8)
+                          : event.target.value,
+                      )
+                    }
+                  />
                 </label>
                 <label className="detail-form-full">
                   <span>Nomor WhatsApp</span>
-                  <input type="text" placeholder="08xxxxxxxxxx" />
+                  <input
+                    type="text"
+                    placeholder="08xxxxxxxxxx"
+                    inputMode={isMobileLegends ? 'numeric' : 'text'}
+                    maxLength={isMobileLegends ? 13 : undefined}
+                    value={whatsAppNumber}
+                    onChange={(event) => setWhatsAppNumber(event.target.value)}
+                  />
                 </label>
               </div>
             </section>
@@ -145,8 +220,14 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
               <div className="detail-payment-groups">
                 {paymentGroups.map((group) => {
                   const isExpanded = expandedPaymentId === group.id;
-                  const togglePaymentGroup = () =>
+                  const togglePaymentGroup = () => {
+                    if (!selectedPackage) {
+                      showPaymentNotice();
+                      return;
+                    }
+
                     setExpandedPaymentId((current) => (current === group.id ? '' : group.id));
+                  };
 
                   const trigger = (
                     <button
@@ -203,7 +284,7 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
                                   <span className={`detail-payment-option-brand detail-payment-badge-${group.id}`}>
                                     {method.brand}
                                   </span>
-                                  <strong>{selectedPackage ? formatPrice(totalPrice) : 'Pilih nominal dulu'}</strong>
+                                  <strong>{selectedPackage ? formatPrice(totalPrice) : 'Pilih item terlebih dahulu'}</strong>
                                   <small>{method.label}</small>
                                 </button>
                               );
@@ -231,6 +312,24 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
             </section>
           </div>
         </div>
+
+        {paymentNotice ? (
+          <div className="detail-toast" role="status" aria-live="polite">
+            <span className="detail-toast-icon">
+              <Info size={18} />
+            </span>
+            <p>{paymentNotice}</p>
+            <button
+              type="button"
+              className="detail-toast-close"
+              aria-label="Tutup notifikasi"
+              onClick={() => setPaymentNotice('')}
+            >
+              <X size={18} />
+            </button>
+            <span className="detail-toast-progress" aria-hidden="true" />
+          </div>
+        ) : null}
       </div>
     </section>
   );
