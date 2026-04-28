@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, BadgeHelp, ChevronDown, ChevronUp, ShieldCheck, Wallet, Zap } from 'lucide-react';
 import '../assets/game-detail.css';
 import { paymentGroups } from '../data/games';
@@ -10,14 +10,20 @@ interface GameDetailPageProps {
 }
 
 const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
-  const [selectedPackageId, setSelectedPackageId] = useState(game.packages[0]?.id ?? '');
-  const [expandedPaymentId, setExpandedPaymentId] = useState(paymentGroups[1]?.id ?? paymentGroups[0]?.id ?? '');
+  const [selectedPackageId, setSelectedPackageId] = useState('');
+  const [expandedPaymentId, setExpandedPaymentId] = useState('');
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('');
 
   const selectedPackage = useMemo(
-    () => game.packages.find((item) => item.id === selectedPackageId) ?? game.packages[0],
+    () => game.packages.find((item) => item.id === selectedPackageId),
     [game.packages, selectedPackageId],
   );
+
+  useEffect(() => {
+    setSelectedPackageId('');
+    setExpandedPaymentId('');
+    setSelectedPaymentMethodId('');
+  }, [game.slug]);
 
   const basePrice = useMemo(() => {
     if (!selectedPackage) {
@@ -110,7 +116,11 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
                     key={item.id}
                     type="button"
                     className={`detail-package-card ${selectedPackageId === item.id ? 'is-selected' : ''}`}
-                    onClick={() => setSelectedPackageId(item.id)}
+                    onClick={() => {
+                      const isSamePackage = selectedPackageId === item.id;
+                      setSelectedPackageId(isSamePackage ? '' : item.id);
+                      setSelectedPaymentMethodId('');
+                    }}
                   >
                     <div className="detail-package-top">
                       <p>{item.name}</p>
@@ -183,12 +193,17 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
                                   key={method.id}
                                   type="button"
                                   className={`detail-payment-option ${selectedPaymentMethodId === method.id ? 'is-selected' : ''}`}
-                                  onClick={() => setSelectedPaymentMethodId(method.id)}
+                                  disabled={!selectedPackage}
+                                  onClick={() =>
+                                    setSelectedPaymentMethodId((current) =>
+                                      current === method.id ? '' : method.id,
+                                    )
+                                  }
                                 >
                                   <span className={`detail-payment-option-brand detail-payment-badge-${group.id}`}>
                                     {method.brand}
                                   </span>
-                                  <strong>{formatPrice(totalPrice)}</strong>
+                                  <strong>{selectedPackage ? formatPrice(totalPrice) : 'Pilih nominal dulu'}</strong>
                                   <small>{method.label}</small>
                                 </button>
                               );
@@ -204,8 +219,14 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
               </div>
 
               <p className="detail-payment-note">
-                Harga pembayaran otomatis mengikuti nominal <strong>{selectedPackage?.name ?? 'yang dipilih'}</strong> dengan dasar
-                harga <strong>{selectedPackage ? formatPrice(basePrice) : '-'}</strong>.
+                {selectedPackage ? (
+                  <>
+                    Harga pembayaran otomatis mengikuti nominal <strong>{selectedPackage.name}</strong> dengan dasar
+                    harga <strong>{formatPrice(basePrice)}</strong>.
+                  </>
+                ) : (
+                  <>Pilih nominal top up dulu supaya harga di metode pembayaran muncul sesuai produk yang dipilih.</>
+                )}
               </p>
             </section>
           </div>
