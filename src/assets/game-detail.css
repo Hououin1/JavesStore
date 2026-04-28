@@ -541,6 +541,10 @@
   flex-shrink: 0;
 }
 
+.detail-toast.is-error .detail-toast-icon {
+  background: #ef4444;
+}
+
 .detail-toast p {
   margin: 0;
   color: #6b7280;
@@ -569,6 +573,10 @@
   background: linear-gradient(90deg, #9ca3af, #d1d5db);
   transform-origin: left center;
   animation: detail-toast-countdown 2.8s linear forwards;
+}
+
+.detail-toast.is-error .detail-toast-progress {
+  background: linear-gradient(90deg, #ef4444, #f87171);
 }
 
 @keyframes detail-toast-countdown {
