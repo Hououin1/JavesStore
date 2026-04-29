@@ -325,16 +325,10 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
                   <input
                     ref={playerIdInputRef}
                     type="text"
-                    inputMode={isMobileLegends ? 'numeric' : 'text'}
+                    inputMode="numeric"
                     placeholder="Masukkan user ID"
                     value={playerId}
-                    onChange={(event) =>
-                      setPlayerId(
-                        isMobileLegends
-                          ? sanitizeDigits(event.target.value)
-                          : event.target.value,
-                      )
-                    }
+                    onChange={(event) => setPlayerId(sanitizeDigits(event.target.value))}
                   />
                 </label>
                 {isMobileLegends ? (
