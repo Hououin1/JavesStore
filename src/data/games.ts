@@ -2,6 +2,12 @@ import mobileLegendsBanner from '../assets/mobile-legends-banner.jpeg';
 import freeFireBanner from '../assets/free-fire-banner.jpeg';
 import valorantBanner from '../assets/valorant-banner.jpeg';
 import genshinImpactBanner from '../assets/genshin-impact-banner.jpeg';
+import pubgMobileBanner from '../assets/pubg-mobile-banner.jpeg';
+import honorOfKingsBanner from '../assets/honor-of-kings-banner.jpeg';
+import fcMobileBanner from '../assets/fc-mobile-banner.jpeg';
+import leagueOfLegendsBanner from '../assets/league-of-legends-banner.jpeg';
+import robloxBanner from '../assets/roblox-banner.jpeg';
+import callOfDutyMobileBanner from '../assets/call-of-duty-mobile-banner.jpeg';
 
 export interface GamePackage {
   id: string;
@@ -175,6 +181,10 @@ export const games: GameDetail[] = [
     title: 'PUBG Mobile',
     category: 'Survival',
     accent: 'accent-green',
+    image: pubgMobileBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'Unknown Cash',
     description:
       'Halaman lanjutan PUBG Mobile siap untuk UC, Royale Pass, dan paket promo mingguan dengan struktur yang mudah dikembangkan.',
@@ -192,6 +202,10 @@ export const games: GameDetail[] = [
     title: 'Honor of Kings',
     category: '5v5 Arena',
     accent: 'accent-gold',
+    image: honorOfKingsBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'Tokens',
     description:
       'Top up Honor of Kings dengan halaman detail modern yang siap dipakai untuk kebutuhan token dan event terbatas.',
@@ -209,6 +223,10 @@ export const games: GameDetail[] = [
     title: 'FC Mobile',
     category: 'Sports',
     accent: 'accent-blue',
+    image: fcMobileBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'FC Points',
     description:
       'Halaman checkout FC Mobile buat points dan event pack dengan gaya visual yang tetap konsisten.',
@@ -226,6 +244,10 @@ export const games: GameDetail[] = [
     title: 'League of Legends',
     category: 'PC MOBA',
     accent: 'accent-pink',
+    image: leagueOfLegendsBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'Riot Points',
     description:
       'Top up RP untuk skin dan pass dengan halaman lanjutan yang enak dibaca dan tinggal dikoneksikan ke data asli.',
@@ -260,6 +282,10 @@ export const games: GameDetail[] = [
     title: 'Roblox',
     category: 'Adventure',
     accent: 'accent-slate',
+    image: robloxBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'RBX Voucher',
     description:
       'Struktur halaman detail Roblox sudah disiapkan buat voucher, paket RBX, dan promo spesial lainnya.',
@@ -294,6 +320,10 @@ export const games: GameDetail[] = [
     title: 'Call of Duty Mobile',
     category: 'FPS',
     accent: 'accent-indigo',
+    image: callOfDutyMobileBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'CP Store',
     description:
       'Halaman top up CODM untuk CP dan battle pass dengan struktur siap lanjut ke payment method atau checkout final.',
