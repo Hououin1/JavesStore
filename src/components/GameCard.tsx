@@ -3,12 +3,29 @@ import "../assets/GameCard.css";
 interface GameCardProps {
   title: string;
   accent: string;
+  imageSrc?: string;
+  imageFit?: 'cover' | 'contain';
+  imagePosition?: string;
+  imageScale?: string;
   onClick?: () => void;
 }
 
-const GameCard = ({ title, accent, onClick }: GameCardProps) => {
+const GameCard = ({ title, accent, imageSrc, imageFit = 'cover', imagePosition = 'center', imageScale = '100%', onClick }: GameCardProps) => {
   const content = (
     <div className={`card-image-wrapper ${accent}`}>
+      {imageSrc ? (
+        <div className="card-artwork">
+          <img
+            src={imageSrc}
+            alt={title}
+            className={`card-artwork-image ${imageFit === 'contain' ? 'is-contain' : 'is-cover'}`}
+            style={{
+              objectPosition: imagePosition,
+              transform: `scale(${Number.parseFloat(imageScale) / 100})`,
+            }}
+          />
+        </div>
+      ) : null}
       <div className="card-pattern"></div>
       <div className="card-overlay">
         <h3 className="card-title">{title}</h3>

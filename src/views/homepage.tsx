@@ -77,6 +77,10 @@ const HomePage = ({ onSelectGame }: HomePageProps) => {
               key={item.id}
               title={item.title}
               accent={item.accent}
+              imageSrc={'image' in item ? item.image : undefined}
+              imageFit={'imageFit' in item ? item.imageFit : undefined}
+              imagePosition={'imagePosition' in item ? item.imagePosition : undefined}
+              imageScale={'imageScale' in item ? item.imageScale : undefined}
               onClick={'slug' in item ? () => onSelectGame(item.slug) : undefined}
             />
           ))}

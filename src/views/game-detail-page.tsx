@@ -208,6 +208,17 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
             <div className={`detail-hero-card ${game.accent}`}>
               <div className="detail-hero-art">
                 <div className="detail-hero-badge">{game.category}</div>
+                {game.image ? (
+                  <img
+                    src={game.image}
+                    alt={game.title}
+                    className={`detail-hero-image detail-hero-image-full ${game.imageFit === 'contain' ? 'is-contain' : 'is-cover'}`}
+                    style={{
+                      objectPosition: game.imagePosition ?? 'center',
+                      transform: `scale(${Number.parseFloat(game.imageScale ?? '100%') / 100})`,
+                    }}
+                  />
+                ) : null}
                 <div className="detail-hero-pattern" />
                 <div className="detail-hero-copy">
                   <p className="detail-hero-label">{game.heroLabel}</p>

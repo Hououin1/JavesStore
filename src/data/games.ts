@@ -1,3 +1,8 @@
+import mobileLegendsBanner from '../assets/mobile-legends-banner.jpeg';
+import freeFireBanner from '../assets/free-fire-banner.jpeg';
+import valorantBanner from '../assets/valorant-banner.jpeg';
+import genshinImpactBanner from '../assets/genshin-impact-banner.jpeg';
+
 export interface GamePackage {
   id: string;
   name: string;
@@ -26,6 +31,10 @@ export interface GameDetail {
   title: string;
   category: string;
   accent: string;
+  image?: string;
+  imageFit?: 'cover' | 'contain';
+  imagePosition?: string;
+  imageScale?: string;
   heroLabel: string;
   description: string;
   benefits: string[];
@@ -39,6 +48,10 @@ export const games: GameDetail[] = [
     title: 'Mobile Legends',
     category: 'MOBA',
     accent: 'accent-cyan',
+    image: mobileLegendsBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '118%',
     heroLabel: 'Weekly Diamond Pass',
     description:
       'Top up Mobile Legends cepat, aman, dan langsung masuk. Cocok untuk weekly pass, diamond rutin, dan push rank tanpa ribet.',
@@ -65,6 +78,32 @@ export const games: GameDetail[] = [
       { id: 'ml-19', name: '128 Diamonds', price: 'Rp33.952', bonus: '117 + 12 Bonus', group: 'diamonds' },
       { id: 'ml-20', name: '148 Diamonds', price: 'Rp39.208', bonus: '134 + 14 Bonus', group: 'diamonds' },
       { id: 'ml-21', name: '170 Diamonds', price: 'Rp44.632', bonus: '154 + 16 Bonus', group: 'diamonds' },
+      { id: 'ml-22', name: '176 Diamonds', price: 'Rp46.696', bonus: '160 + 17 Bonus', group: 'diamonds' },
+      { id: 'ml-23', name: '184 Diamonds', price: 'Rp49.030', bonus: '166 + 18 Bonus', group: 'diamonds' },
+      { id: 'ml-24', name: '210 Diamonds', price: 'Rp55.432', bonus: '190 + 20 Bonus', group: 'diamonds' },
+      { id: 'ml-25', name: '222 Diamonds', price: 'Rp58.775', bonus: '201 + 21 Bonus', group: 'diamonds' },
+      { id: 'ml-26', name: '240 Diamonds', price: 'Rp62.630', bonus: '217 + 23 Bonus', group: 'diamonds' },
+      { id: 'ml-27', name: '277 Diamonds', price: 'Rp72.840', bonus: '251 + 26 Bonus', group: 'diamonds' },
+      { id: 'ml-28', name: '284 Diamonds', price: 'Rp74.284', bonus: '261 + 40 Bonus', group: 'diamonds' },
+      { id: 'ml-29', name: '296 Diamonds', price: 'Rp77.123', bonus: '246 + 40 Bonus', group: 'diamonds' },
+      { id: 'ml-30', name: '300 Diamonds', price: 'Rp78.300', bonus: '261 + 40 Bonus', group: 'diamonds' },
+      { id: 'ml-31', name: '332 Diamonds', price: 'Rp87.421', bonus: '289 + 43 Bonus', group: 'diamonds' },
+      { id: 'ml-32', name: '340 Diamonds', price: 'Rp88.921', bonus: '296 + 44 Bonus', group: 'diamonds' },
+      { id: 'ml-33', name: '355 Diamonds', price: 'Rp93.532', bonus: '309 + 46 Bonus', group: 'diamonds' },
+      { id: 'ml-34', name: '370 Diamonds', price: 'Rp96.333', bonus: '324 + 46 Bonus', group: 'diamonds' },
+      { id: 'ml-35', name: '453 Diamonds', price: 'Rp118.772', bonus: '408 + 45 Bonus', group: 'diamonds' },
+      { id: 'ml-36', name: '568 Diamonds', price: 'Rp145.656', bonus: '503 + 65 Bonus', group: 'diamonds' },
+      { id: 'ml-37', name: '642 Diamonds', price: 'Rp164.631', bonus: '571 + 71 Bonus', group: 'diamonds' },
+      { id: 'ml-38', name: '761 Diamonds', price: 'Rp183.923', bonus: '637 + 79 Bonus', group: 'diamonds' },
+      { id: 'ml-39', name: '792 Diamonds', price: 'Rp204.333', bonus: '707 + 85 Bonus', group: 'diamonds' },
+      { id: 'ml-40', name: '875 Diamonds', price: 'Rp223.021', bonus: '774 + 101 Bonus', group: 'diamonds' },
+      { id: 'ml-41', name: '963 Diamonds', price: 'Rp240.521', bonus: '851 + 109 Bonus', group: 'diamonds' },
+      { id: 'ml-42', name: '1000 Diamonds', price: 'Rp252.000', bonus: '887 + 113 Bonus', group: 'diamonds' },
+      { id: 'ml-43', name: '1136 Diamonds', price: 'Rp290.500', bonus: '990 + 146 Bonus', group: 'diamonds' },
+      { id: 'ml-44', name: '1159 Diamonds', price: 'Rp297.235', bonus: '1031 + 128 Bonus', group: 'diamonds' },
+      { id: 'ml-45', name: '1220 Diamonds', price: 'Rp302.625', bonus: '1083 + 138 Bonus', group: 'diamonds' },
+      { id: 'ml-46', name: '1506 Diamonds', price: 'Rp385.425', bonus: '1335 + 172 Bonus', group: 'diamonds' },
+      { id: 'ml-47', name: '1704 Diamonds', price: 'Rp436.327', bonus: '1509 + 195 Bonus', group: 'diamonds' },
     ],
   },
   {
@@ -73,6 +112,10 @@ export const games: GameDetail[] = [
     title: 'Free Fire',
     category: 'Battle Royale',
     accent: 'accent-orange',
+    image: freeFireBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'Diamond Instan',
     description:
       'Beli diamond Free Fire untuk bundle, elite pass, dan event spesial dengan checkout yang simpel dan cepat.',
@@ -90,6 +133,10 @@ export const games: GameDetail[] = [
     title: 'Valorant',
     category: 'Tactical Shooter',
     accent: 'accent-red',
+    image: valorantBanner,
+    imageFit: 'cover',
+    imagePosition: 'center',
+    imageScale: '100%',
     heroLabel: 'Valorant Points',
     description:
       'Isi ulang Valorant Points buat skin, battlepass, dan bundle favorit dengan tampilan checkout yang rapi dan terpercaya.',
@@ -107,6 +154,10 @@ export const games: GameDetail[] = [
     title: 'Genshin Impact',
     category: 'Open World',
     accent: 'accent-violet',
+    image: genshinImpactBanner,
+    imageFit: 'cover',
+    imagePosition: 'center top',
+    imageScale: '114%',
     heroLabel: 'Genesis Crystal',
     description:
       'Top up Genesis Crystal dan Welkin Moon untuk kebutuhan primogem harian dengan halaman detail yang siap dipakai.',
