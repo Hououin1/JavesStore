@@ -16,6 +16,7 @@ type NoticeState = {
 
 const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
   const isMobileLegends = game.slug === 'mobile-legends';
+  const [selectedPackageGroup, setSelectedPackageGroup] = useState<'diamonds' | 'weekly-pass'>('diamonds');
   const [selectedPackageId, setSelectedPackageId] = useState('');
   const [expandedPaymentId, setExpandedPaymentId] = useState('');
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('');
@@ -35,7 +36,16 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
     [game.packages, selectedPackageId],
   );
 
+  const visiblePackages = useMemo(() => {
+    if (!isMobileLegends) {
+      return game.packages;
+    }
+
+    return game.packages.filter((item) => item.group === selectedPackageGroup);
+  }, [game.packages, isMobileLegends, selectedPackageGroup]);
+
   useEffect(() => {
+    setSelectedPackageGroup('diamonds');
     setSelectedPackageId('');
     setExpandedPaymentId('');
     setSelectedPaymentMethodId('');
@@ -245,12 +255,49 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
                 <span className="detail-step">2</span>
                 <div>
                   <h2>Pilih Nominal Top Up</h2>
-                  <p>Nominal bisa kamu ganti lagi nanti dari data produk asli.</p>
+                  <p>
+                    {isMobileLegends
+                      ? 'Pilih kategori dulu, lalu tentukan nominal yang ingin kamu beli.'
+                      : 'Nominal bisa kamu ganti lagi nanti dari data produk asli.'}
+                  </p>
                 </div>
               </div>
 
+              {isMobileLegends ? (
+                <div className="detail-package-groups" role="tablist" aria-label="Kategori top up Mobile Legends">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={selectedPackageGroup === 'diamonds'}
+                    className={`detail-package-group-tab ${selectedPackageGroup === 'diamonds' ? 'is-active' : ''}`}
+                    onClick={() => {
+                      setSelectedPackageGroup('diamonds');
+                      setSelectedPackageId('');
+                      setSelectedPaymentMethodId('');
+                    }}
+                  >
+                    <span className="detail-package-group-icon" aria-hidden="true">💎</span>
+                    <span>Diamonds</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={selectedPackageGroup === 'weekly-pass'}
+                    className={`detail-package-group-tab ${selectedPackageGroup === 'weekly-pass' ? 'is-active' : ''}`}
+                    onClick={() => {
+                      setSelectedPackageGroup('weekly-pass');
+                      setSelectedPackageId('');
+                      setSelectedPaymentMethodId('');
+                    }}
+                  >
+                    <span className="detail-package-group-icon" aria-hidden="true">🎟️</span>
+                    <span>Weekly Pass</span>
+                  </button>
+                </div>
+              ) : null}
+
               <div className="detail-package-grid">
-                {game.packages.map((item) => (
+                {visiblePackages.map((item) => (
                   <button
                     key={item.id}
                     type="button"

@@ -4,6 +4,7 @@ export interface GamePackage {
   price: string;
   bonus?: string;
   discount?: string;
+  group?: string;
 }
 
 export interface PaymentGroup {
@@ -41,12 +42,29 @@ export const games: GameDetail[] = [
     heroLabel: 'Weekly Diamond Pass',
     description:
       'Top up Mobile Legends cepat, aman, dan langsung masuk. Cocok untuk weekly pass, diamond rutin, dan push rank tanpa ribet.',
-    benefits: ['Proses instan', 'Pembayaran aman', 'Layanan pelanggan aktif', 'Cocok untuk top up harian'],
+    benefits: ['Proses instan', 'Pembayaran aman', 'Layanan pelanggan aktif', 'WDP harian maksimal total 70 hari'],
     packages: [
-      { id: 'ml-1', name: 'Weekly Diamond Pass', price: 'Rp27.777', discount: '20% OFF' },
-      { id: 'ml-2', name: '2X Weekly Diamond Pass', price: 'Rp56.666', discount: '11% OFF' },
-      { id: 'ml-3', name: '3X Weekly Diamond Pass', price: 'Rp84.666', discount: '10% OFF' },
-      { id: 'ml-4', name: 'WDP + 170 Diamonds', price: 'Rp72.666', bonus: '154 + 16 Bonus', discount: '14% OFF' },
+      { id: 'ml-1', name: '1 Weekly Diamond Pass', price: 'Rp27.777', group: 'weekly-pass' },
+      { id: 'ml-2', name: '2 Weekly Diamond Pass', price: 'Rp55.500', group: 'weekly-pass' },
+      { id: 'ml-3', name: '3 Weekly Diamond Pass', price: 'Rp83.160', group: 'weekly-pass' },
+      { id: 'ml-4', name: '3 Diamonds', price: 'Rp1.100', bonus: '3 + 0 Bonus', group: 'diamonds' },
+      { id: 'ml-5', name: '5 Diamonds', price: 'Rp1.500', bonus: '5 + 0 Bonus', group: 'diamonds' },
+      { id: 'ml-6', name: '10 Diamonds', price: 'Rp2.923', bonus: '10 + 0 Bonus', group: 'diamonds' },
+      { id: 'ml-7', name: '12 Diamonds', price: 'Rp3.414', bonus: '11 + 1 Bonus', group: 'diamonds' },
+      { id: 'ml-8', name: '17 Diamonds', price: 'Rp4.704', bonus: '16 + 1 Bonus', group: 'diamonds' },
+      { id: 'ml-9', name: '19 Diamonds', price: 'Rp5.358', bonus: '17 + 2 Bonus', group: 'diamonds' },
+      { id: 'ml-10', name: '22 Diamonds', price: 'Rp6.352', bonus: '20 + 2 Bonus', group: 'diamonds' },
+      { id: 'ml-11', name: '28 Diamonds', price: 'Rp7.765', bonus: '25 + 3 Bonus', group: 'diamonds' },
+      { id: 'ml-12', name: '36 Diamonds', price: 'Rp9.752', bonus: '33 + 3 Bonus', group: 'diamonds' },
+      { id: 'ml-13', name: '44 Diamonds', price: 'Rp11.650', bonus: '40 + 4 Bonus', group: 'diamonds' },
+      { id: 'ml-14', name: '59 Diamonds', price: 'Rp15.531', bonus: '53 + 6 Bonus', group: 'diamonds' },
+      { id: 'ml-15', name: '64 Diamonds', price: 'Rp17.013', bonus: '58 + 6 Bonus', group: 'diamonds' },
+      { id: 'ml-16', name: '71 Diamonds', price: 'Rp19.108', bonus: '64 + 7 Bonus', group: 'diamonds' },
+      { id: 'ml-17', name: '85 Diamonds', price: 'Rp22.305', bonus: '77 + 8 Bonus', group: 'diamonds' },
+      { id: 'ml-18', name: '113 Diamonds', price: 'Rp30.073', bonus: '102 + 11 Bonus', group: 'diamonds' },
+      { id: 'ml-19', name: '128 Diamonds', price: 'Rp33.952', bonus: '117 + 12 Bonus', group: 'diamonds' },
+      { id: 'ml-20', name: '148 Diamonds', price: 'Rp39.208', bonus: '134 + 14 Bonus', group: 'diamonds' },
+      { id: 'ml-21', name: '170 Diamonds', price: 'Rp44.632', bonus: '154 + 16 Bonus', group: 'diamonds' },
     ],
   },
   {
