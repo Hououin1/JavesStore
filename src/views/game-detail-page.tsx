@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, BadgeHelp, ChevronDown, ChevronUp, Info, ShieldCheck, Wallet, X, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BadgeHelp, ChevronDown, ChevronUp, Info, ShieldCheck, Wallet, X, Zap } from 'lucide-react';
 import '../assets/game-detail.css';
 import { paymentGroups } from '../data/games';
 import type { GameDetail } from '../data/games';
+import type { PendingPayment } from '../types/payment';
 
 interface GameDetailPageProps {
   game: GameDetail;
   onBack: () => void;
+  onStartPayment: (payment: PendingPayment) => void;
 }
 
 type NoticeState = {
@@ -14,12 +16,13 @@ type NoticeState = {
   variant: 'info' | 'error';
 };
 
-const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
+const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) => {
   const isMobileLegends = game.slug === 'mobile-legends';
   const [selectedPackageGroup, setSelectedPackageGroup] = useState<'diamonds' | 'weekly-pass'>('diamonds');
   const [selectedPackageId, setSelectedPackageId] = useState('');
   const [expandedPaymentId, setExpandedPaymentId] = useState('');
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('');
+  const [isCheckoutDialogOpen, setIsCheckoutDialogOpen] = useState(false);
   const [playerId, setPlayerId] = useState('');
   const [serverZone, setServerZone] = useState('');
   const [whatsAppNumber, setWhatsAppNumber] = useState('');
@@ -44,11 +47,20 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
     return game.packages.filter((item) => item.group === selectedPackageGroup);
   }, [game.packages, isMobileLegends, selectedPackageGroup]);
 
+  const selectedPaymentMethod = useMemo(
+    () =>
+      paymentGroups
+        .flatMap((group) => group.methods)
+        .find((method) => method.id === selectedPaymentMethodId),
+    [selectedPaymentMethodId],
+  );
+
   useEffect(() => {
     setSelectedPackageGroup('diamonds');
     setSelectedPackageId('');
     setExpandedPaymentId('');
     setSelectedPaymentMethodId('');
+    setIsCheckoutDialogOpen(false);
     setPlayerId('');
     setServerZone('');
     setWhatsAppNumber('');
@@ -127,6 +139,38 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
   const hasCustomerData = isMobileLegends
     ? Boolean(playerId.trim() && serverZone.trim() && whatsAppNumber.trim())
     : Boolean(playerId.trim() && whatsAppNumber.trim());
+
+  const checkoutReady = Boolean(selectedPackage && selectedPaymentMethod && hasCustomerData);
+  const totalPrice = selectedPaymentMethod ? basePrice + selectedPaymentMethod.fee : basePrice;
+
+  const buildPendingPayment = (): PendingPayment | null => {
+    if (!selectedPackage || !selectedPaymentMethod || !hasCustomerData) {
+      return null;
+    }
+
+    const createdAt = new Date();
+    const expiresAt = new Date(createdAt.getTime() + 8 * 60 * 60 * 1000);
+    const randomToken = Math.random().toString(36).slice(2, 10).toUpperCase();
+    const orderPrefix = game.slug.slice(0, 2).toUpperCase();
+
+    return {
+      orderId: `${orderPrefix}-${Date.now()}-${randomToken}`,
+      createdAt: createdAt.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+      gameSlug: game.slug,
+      gameTitle: game.title,
+      packageName: selectedPackage.name,
+      packagePrice: basePrice,
+      totalPrice,
+      paymentBrand: selectedPaymentMethod.brand,
+      paymentLabel: selectedPaymentMethod.label,
+      paymentFee: selectedPaymentMethod.fee,
+      playerId: playerId.trim(),
+      zoneId: serverZone.trim(),
+      whatsAppNumber: whatsAppNumber.trim(),
+      packageGroup: selectedPackage.group,
+    };
+  };
 
   const showMissingPackageNotice = () => {
     scrollToSection(packageSectionRef);
@@ -425,6 +469,29 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
                   <>Pilih nominal top up dulu supaya harga di metode pembayaran muncul sesuai produk yang dipilih.</>
                 )}
               </p>
+
+              {checkoutReady ? (
+                <div className="detail-checkout-bar">
+                  <div className="detail-checkout-summary">
+                    <span className="detail-checkout-icon" aria-hidden="true">
+                      {selectedPackage?.group === 'weekly-pass' ? 'WP' : 'DM'}
+                    </span>
+                    <div className="detail-checkout-copy">
+                      <strong>{selectedPackage?.name}</strong>
+                      <span>{formatPrice(totalPrice)}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="detail-checkout-button"
+                    onClick={() => setIsCheckoutDialogOpen(true)}
+                  >
+                    <span>Konfirmasi Pembelian</span>
+                    <ArrowRight size={20} />
+                  </button>
+                </div>
+              ) : null}
             </section>
           </div>
         </div>
@@ -444,6 +511,98 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
               <X size={18} />
             </button>
             <span className="detail-toast-progress" aria-hidden="true" />
+          </div>
+        ) : null}
+
+        {isCheckoutDialogOpen && checkoutReady ? (
+          <div className="detail-dialog-backdrop" role="presentation" onClick={() => setIsCheckoutDialogOpen(false)}>
+            <div
+              className="detail-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="checkout-dialog-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="detail-dialog-header">
+                <div>
+                  <h2 id="checkout-dialog-title">Detail Pesanan</h2>
+                  <p>Jika data pesanan kamu sudah benar, klik beli sekarang.</p>
+                </div>
+                <button
+                  type="button"
+                  className="detail-dialog-close"
+                  aria-label="Tutup dialog"
+                  onClick={() => setIsCheckoutDialogOpen(false)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="detail-dialog-section">
+                <h3>Data Player</h3>
+                <div className="detail-dialog-grid">
+                  <span>User ID</span>
+                  <strong>{playerId}</strong>
+
+                  {isMobileLegends ? (
+                    <>
+                      <span>Zone ID</span>
+                      <strong>{serverZone}</strong>
+                    </>
+                  ) : null}
+
+                  <span>Nomor Handphone</span>
+                  <strong>{whatsAppNumber}</strong>
+                </div>
+              </div>
+
+              <div className="detail-dialog-section">
+                <h3>Ringkasan Pembelian</h3>
+                <div className="detail-dialog-grid">
+                  <span>Item</span>
+                  <strong>{selectedPackage?.name}</strong>
+
+                  <span>Harga</span>
+                  <strong>{formatPrice(basePrice)}</strong>
+
+                  <span>Fee</span>
+                  <strong>{formatPrice(selectedPaymentMethod?.fee ?? 0)}</strong>
+
+                  <span>Sistem Pembayaran</span>
+                  <strong>{selectedPaymentMethod?.label}</strong>
+
+                  <span>Total Pembayaran</span>
+                  <strong>{formatPrice(totalPrice)}</strong>
+                </div>
+              </div>
+
+              <div className="detail-dialog-actions">
+                <button
+                  type="button"
+                  className="detail-dialog-cancel"
+                  onClick={() => setIsCheckoutDialogOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="detail-dialog-confirm"
+                  onClick={() => {
+                    const payment = buildPendingPayment();
+
+                    if (!payment) {
+                      return;
+                    }
+
+                    setIsCheckoutDialogOpen(false);
+                    onStartPayment(payment);
+                  }}
+                >
+                  <span>Beli Sekarang</span>
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            </div>
           </div>
         ) : null}
       </div>

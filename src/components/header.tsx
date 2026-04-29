@@ -33,10 +33,16 @@ const Header = () => {
             <Menu size={24} />
           </button>
 
-          <div className="site-brand">
+          <a
+            href="#/"
+            className="site-brand"
+            onClick={() => {
+              setIsSidebarOpen(false);
+            }}
+          >
             <img src={javesLogo} alt="Logo Javes Store" className="site-brand-logo" />
             <span>Javes Store</span>
-          </div>
+          </a>
         </div>
       </header>
 
