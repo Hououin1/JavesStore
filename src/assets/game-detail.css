@@ -1,5 +1,5 @@
 .detail-section {
-  padding: 22px 20px 40px;
+  padding: 34px 20px 40px;
 }
 
 .detail-container {
@@ -602,7 +602,7 @@
 
 @media (max-width: 768px) {
   .detail-section {
-    padding: 18px 14px 32px;
+    padding: 24px 14px 32px;
   }
 
   .detail-hero-card,

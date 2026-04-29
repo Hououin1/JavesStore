@@ -42,7 +42,7 @@ function App() {
   return (
     <div className="w-full min-h-screen bg-[#1c1e25]">
       <Header />
-      <main className="pt-28 pb-10">
+      <main style={{ paddingTop: '64px', paddingBottom: '40px' }}>
         {selectedGame ? (
           <GameDetailPage game={selectedGame} onBack={handleBackHome} />
         ) : (

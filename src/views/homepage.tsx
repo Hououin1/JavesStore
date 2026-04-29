@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import GameCard from '../components/GameCard';
 import '../assets/homepage.css';
 import { games } from '../data/games';
+import homepageBanner from '../assets/homepage-banner.jpeg';
 
 interface HomePageProps {
   onSelectGame: (slug: string) => void;
@@ -26,6 +27,16 @@ const HomePage = ({ onSelectGame }: HomePageProps) => {
 
   return (
     <section className="home-section">
+      <div className="home-banner-shell">
+        <div className="home-banner">
+          <img
+            src={homepageBanner}
+            alt="Banner promo top up Javes Store"
+            className="home-banner-image"
+          />
+        </div>
+      </div>
+
       <div className="home-container">
         <div className="section-header">
           <div>

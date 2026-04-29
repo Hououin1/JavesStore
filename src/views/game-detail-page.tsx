@@ -114,7 +114,9 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
     }, 220);
   };
 
-  const hasCustomerData = Boolean(playerId.trim() && serverZone.trim() && whatsAppNumber.trim());
+  const hasCustomerData = isMobileLegends
+    ? Boolean(playerId.trim() && serverZone.trim() && whatsAppNumber.trim())
+    : Boolean(playerId.trim() && whatsAppNumber.trim());
 
   const showMissingPackageNotice = () => {
     scrollToSection(packageSectionRef);
@@ -127,7 +129,7 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
   const showMissingCustomerNotice = () => {
     if (!playerId.trim()) {
       scrollToInput(playerIdInputRef);
-    } else if (!serverZone.trim()) {
+    } else if (isMobileLegends && !serverZone.trim()) {
       scrollToInput(serverZoneInputRef);
     } else {
       scrollToInput(whatsAppInputRef);
@@ -191,7 +193,7 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
 
               <div className="detail-form-grid">
                 <label>
-                  <span>Player ID</span>
+                  <span>User ID</span>
                   <input
                     ref={playerIdInputRef}
                     type="text"
@@ -207,34 +209,32 @@ const GameDetailPage = ({ game, onBack }: GameDetailPageProps) => {
                     }
                   />
                 </label>
-                <label>
-                  <span>Server / Zone</span>
-                  <input
-                    ref={serverZoneInputRef}
-                    type="text"
-                    inputMode={isMobileLegends ? 'numeric' : 'text'}
-                    maxLength={isMobileLegends ? 8 : undefined}
-                    placeholder="Masukkan server ID"
-                    value={serverZone}
-                    onChange={(event) =>
-                      setServerZone(
-                        isMobileLegends
-                          ? sanitizeDigits(event.target.value, 8)
-                          : event.target.value,
-                      )
-                    }
-                  />
-                </label>
+                {isMobileLegends ? (
+                  <label>
+                    <span>Server / Zone</span>
+                    <input
+                      ref={serverZoneInputRef}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={8}
+                      placeholder="Masukkan server ID"
+                      value={serverZone}
+                      onChange={(event) =>
+                        setServerZone(sanitizeDigits(event.target.value, 8))
+                      }
+                    />
+                  </label>
+                ) : null}
                 <label className="detail-form-full">
                   <span>Nomor WhatsApp</span>
                   <input
                     ref={whatsAppInputRef}
                     type="text"
                     placeholder="08xxxxxxxxxx"
-                    inputMode={isMobileLegends ? 'numeric' : 'text'}
-                    maxLength={isMobileLegends ? 13 : undefined}
+                    inputMode="numeric"
+                    maxLength={13}
                     value={whatsAppNumber}
-                    onChange={(event) => setWhatsAppNumber(event.target.value)}
+                    onChange={(event) => setWhatsAppNumber(sanitizeDigits(event.target.value, 13))}
                   />
                 </label>
               </div>

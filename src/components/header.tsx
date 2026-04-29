@@ -1,34 +1,47 @@
+import { useEffect, useState } from 'react';
 import { Menu } from 'lucide-react';
+import '../assets/header.css';
+import Sidebar from './Sidebar';
+import javesLogo from '../assets/javes-logo-clean.png';
 
 const Header = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = isSidebarOpen ? 'hidden' : '';
+    document.body.style.paddingRight = isSidebarOpen && scrollbarWidth > 0 ? `${scrollbarWidth}px` : '';
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, [isSidebarOpen]);
+
   return (
-    <header 
-      // Style inline ini buat jaga-jaga kalau Tailwind belum jalan
-      style={{ backgroundColor: '#232631', display: 'flex', alignItems: 'center', padding: '0 16px', height: '64px' }}
-      className="flex items-center w-full bg-[#232631] px-4 h-16 shadow-md"
-    >
-      
-      {/* Container Kiri: Menu & Slot Logo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }} className="flex items-center gap-6">
-        
-        {/* Tombol Hamburger Menu */}
-        <button 
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}
-          className="text-white hover:text-gray-300 transition"
-        >
-          <Menu size={24} />
-        </button>
+    <>
+      <header className="site-header">
+        <div className="site-header-left">
+          <button
+            type="button"
+            className="site-menu-button"
+            aria-label="Buka menu"
+            aria-expanded={isSidebarOpen}
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <Menu size={24} />
+          </button>
 
-        {/* --- TEMPAT LOGO & NAMA WEB --- */}
-        <div style={{ display: 'flex', alignItems: 'center' }} className="flex items-center">
-          {/* Taruh Logo kamu di bawah sini */}
-          <span style={{ color: 'white', fontWeight: 'bold', fontSize: '1.25rem' }} className="text-white font-bold text-xl">
-            Javes Store
-          </span>
+          <div className="site-brand">
+            <img src={javesLogo} alt="Logo Javes Store" className="site-brand-logo" />
+            <span>Javes Store</span>
+          </div>
         </div>
+      </header>
 
-      </div>
-    </header>
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+    </>
   );
 };
 
