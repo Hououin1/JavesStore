@@ -18,7 +18,7 @@ type NoticeState = {
 
 const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) => {
   const isMobileLegends = game.slug === 'mobile-legends';
-  const [selectedPackageGroup, setSelectedPackageGroup] = useState<'diamonds' | 'weekly-pass'>('diamonds');
+  const [selectedPackageGroup, setSelectedPackageGroup] = useState('');
   const [selectedPackageId, setSelectedPackageId] = useState('');
   const [expandedPaymentId, setExpandedPaymentId] = useState('');
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('');
@@ -39,13 +39,45 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
     [game.packages, selectedPackageId],
   );
 
+  const packageGroups = useMemo(() => {
+    const seen = new Set<string>();
+    const groupPriority: Record<string, number> = {
+      diamonds: 0,
+      membership: 1,
+      'weekly-pass': 2,
+    };
+
+    return game.packages
+      .map((item) => item.group)
+      .filter((group): group is string => {
+        if (!group || seen.has(group)) {
+          return false;
+        }
+
+        seen.add(group);
+        return true;
+      })
+      .sort((left, right) => {
+        const leftPriority = groupPriority[left] ?? 99;
+        const rightPriority = groupPriority[right] ?? 99;
+
+        if (leftPriority !== rightPriority) {
+          return leftPriority - rightPriority;
+        }
+
+        return left.localeCompare(right);
+      });
+  }, [game.packages]);
+
+  const hasPackageGroups = packageGroups.length > 1;
+
   const visiblePackages = useMemo(() => {
-    if (!isMobileLegends) {
+    if (!hasPackageGroups || !selectedPackageGroup) {
       return game.packages;
     }
 
     return game.packages.filter((item) => item.group === selectedPackageGroup);
-  }, [game.packages, isMobileLegends, selectedPackageGroup]);
+  }, [game.packages, hasPackageGroups, selectedPackageGroup]);
 
   const selectedPaymentMethod = useMemo(
     () =>
@@ -56,7 +88,7 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
   );
 
   useEffect(() => {
-    setSelectedPackageGroup('diamonds');
+    setSelectedPackageGroup(packageGroups[0] ?? '');
     setSelectedPackageId('');
     setExpandedPaymentId('');
     setSelectedPaymentMethodId('');
@@ -65,7 +97,7 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
     setServerZone('');
     setWhatsAppNumber('');
     setPaymentNotice(null);
-  }, [game.slug]);
+  }, [game.slug, packageGroups]);
 
   useEffect(() => {
     if (!paymentNotice) {
@@ -103,6 +135,37 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
   };
 
   const formatPrice = (value: number) => `Rp ${value.toLocaleString('id-ID')}`;
+
+  const formatPackageGroupLabel = (group: string) => {
+    if (group === 'diamonds') {
+      return 'Diamonds';
+    }
+
+    if (group === 'weekly-pass') {
+      return 'Weekly Pass';
+    }
+
+    if (group === 'membership') {
+      return 'Membership';
+    }
+
+    return group
+      .split('-')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ');
+  };
+
+  const formatPackageGroupBadge = (group?: string) => {
+    if (group === 'weekly-pass') {
+      return 'WP';
+    }
+
+    if (group === 'membership') {
+      return 'MB';
+    }
+
+    return 'DM';
+  };
 
   const scrollToSection = (sectionRef: React.RefObject<HTMLElement | null>) => {
     if (!sectionRef.current) {
@@ -311,43 +374,31 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
                 <div>
                   <h2>Pilih Nominal Top Up</h2>
                   <p>
-                    {isMobileLegends
+                    {hasPackageGroups
                       ? 'Pilih kategori dulu, lalu tentukan nominal yang ingin kamu beli.'
                       : 'Nominal bisa kamu ganti lagi nanti dari data produk asli.'}
                   </p>
                 </div>
               </div>
 
-              {isMobileLegends ? (
-                <div className="detail-package-groups" role="tablist" aria-label="Kategori top up Mobile Legends">
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={selectedPackageGroup === 'diamonds'}
-                    className={`detail-package-group-tab ${selectedPackageGroup === 'diamonds' ? 'is-active' : ''}`}
-                    onClick={() => {
-                      setSelectedPackageGroup('diamonds');
-                      setSelectedPackageId('');
-                      setSelectedPaymentMethodId('');
-                    }}
-                  >
-                    <span className="detail-package-group-icon" aria-hidden="true">💎</span>
-                    <span>Diamonds</span>
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={selectedPackageGroup === 'weekly-pass'}
-                    className={`detail-package-group-tab ${selectedPackageGroup === 'weekly-pass' ? 'is-active' : ''}`}
-                    onClick={() => {
-                      setSelectedPackageGroup('weekly-pass');
-                      setSelectedPackageId('');
-                      setSelectedPaymentMethodId('');
-                    }}
-                  >
-                    <span className="detail-package-group-icon" aria-hidden="true">🎟️</span>
-                    <span>Weekly Pass</span>
-                  </button>
+              {hasPackageGroups ? (
+                <div className="detail-package-groups" role="tablist" aria-label={`Kategori top up ${game.title}`}>
+                  {packageGroups.map((group) => (
+                    <button
+                      key={group}
+                      type="button"
+                      role="tab"
+                      aria-selected={selectedPackageGroup === group}
+                      className={`detail-package-group-tab ${selectedPackageGroup === group ? 'is-active' : ''}`}
+                      onClick={() => {
+                        setSelectedPackageGroup(group);
+                        setSelectedPackageId('');
+                        setSelectedPaymentMethodId('');
+                      }}
+                    >
+                      <span>{formatPackageGroupLabel(group)}</span>
+                    </button>
+                  ))}
                 </div>
               ) : null}
 
@@ -485,7 +536,7 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
                 <div className="detail-checkout-bar">
                   <div className="detail-checkout-summary">
                     <span className="detail-checkout-icon" aria-hidden="true">
-                      {selectedPackage?.group === 'weekly-pass' ? 'WP' : 'DM'}
+                      {formatPackageGroupBadge(selectedPackage?.group)}
                     </span>
                     <div className="detail-checkout-copy">
                       <strong>{selectedPackage?.name}</strong>
