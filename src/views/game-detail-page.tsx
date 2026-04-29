@@ -212,7 +212,7 @@ const GameDetailPage = ({ game, onBack, onStartPayment }: GameDetailPageProps) =
     }
 
     const createdAt = new Date();
-    const expiresAt = new Date(createdAt.getTime() + 8 * 60 * 60 * 1000);
+    const expiresAt = new Date(createdAt.getTime() + 30 * 60 * 1000);
     const randomToken = Math.random().toString(36).slice(2, 10).toUpperCase();
     const orderPrefix = game.slug.slice(0, 2).toUpperCase();
 
